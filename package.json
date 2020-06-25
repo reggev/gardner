@@ -16,6 +16,6 @@
     "packages/*"
   ],
   "scripts": {
-    "start": "lerna start"
+    "start": "lerna run start --stream"
   }
 }
