@@ -6,6 +6,7 @@
                 "ARDUINO=10800"
             ],
             "includePath": [
+                "/Users/reggevamsalem/Documents/Arduino/libraries/JLed/src",
                 "/Users/reggevamsalem/Documents/Arduino/libraries/Neotimer/src",
                 "/Users/reggevamsalem/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.1/libraries/ESP8266WiFi/src",
                 "/Users/reggevamsalem/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.1/libraries/ESP8266HTTPClient/src",

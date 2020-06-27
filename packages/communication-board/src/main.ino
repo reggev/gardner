@@ -1,18 +1,28 @@
-#include "WiFiTools.h"
-#include "api.h"
+#include "API.h"
+#include "WiFiConnection.h"
 #include <Arduino.h>
 
-int gotResult = 0;
+bool gotResult = false;
+WiFiConnectionClient connection;
+API api;
+
 void setup() {
     Serial.begin(115200);
-    connectToWiFi();
+    connection.connect();
+    delay(4000);
 }
 
 void loop() {
+    connection.update();
+    if (connection.hasFailed)
+        return;
+    if (!connection.isConnected)
+        return;
     if (gotResult)
         return;
-    String payload = fetchInfo();
-    gotResult = 1;
+
+    String payload = api.fetchInfo();
+    gotResult = true;
     Serial.print(payload);
     return;
 }

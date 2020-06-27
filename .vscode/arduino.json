@@ -1,7 +1,0 @@
-{
-    "port": "/dev/tty.usbserial-12345678",
-    "board": "arduino:avr:pro",
-    "configuration": "cpu=16MHzatmega328",
-    "programmer": "AVRISP mkII",
-    "sketch": "packages/sensor-board/src/main.ino"
-}
