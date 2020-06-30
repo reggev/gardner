@@ -3,6 +3,7 @@
 
 #include "env.h"
 #include <Arduino.h>
+#include <ArduinoJson.h>
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
@@ -14,9 +15,9 @@ HTTPClient http;
 class API {
   private:
     bool isPending = false;
+    String hostUri = HOST_URI;
     String fetch(String uri) {
-        const char* hostUri = HOST_URI;
-        const String fetchUri = hostUri + uri;
+        const String fetchUri = uri;
         const String failError = "";
         if (http.begin(client, fetchUri)) {
             Serial.println("[HTTP] GET:: " + fetchUri);
@@ -43,8 +44,15 @@ class API {
 
   public:
     String fetchInfo() {
-        String payload = fetch("/");
+        String payload = fetch(hostUri + "/");
         return payload;
+    }
+    long fetchMinutesUntilNextSample() {
+        String payload = fetch(hostUri + "/next-sample");
+        DynamicJsonDocument doc(1024);
+        deserializeJson(doc, payload);
+        long minutes = doc["minutes"];
+        return minutes;
     }
 };
 

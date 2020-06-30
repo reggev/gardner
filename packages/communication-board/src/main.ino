@@ -1,3 +1,4 @@
+
 #include "API.h"
 #include "WiFiConnection.h"
 #include <Arduino.h>
@@ -21,8 +22,9 @@ void loop() {
     if (gotResult)
         return;
 
-    String payload = api.fetchInfo();
+    long minutesUntilNextSample = api.fetchMinutesUntilNextSample();
+    Serial.print(minutesUntilNextSample);
+
     gotResult = true;
-    Serial.print(payload);
     return;
 }
