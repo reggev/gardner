@@ -7,7 +7,7 @@
 WiFiConnectionClient connection;
 API api;
 
-Button submitNowButton(5);
+Button sampleNowButton(SAMPLE_NOW_PIN);
 
 bool gotResult = false;
 
@@ -17,7 +17,7 @@ void setup() {
     Serial.begin(115200);
     connection.connect();
     delay(4000);
-    submitNowButton.subscribe(handleClick);
+    sampleNowButton.subscribe(handleClick);
 }
 
 void loop() {
@@ -27,7 +27,7 @@ void loop() {
     if (!connection.isConnected)
         return;
 
-    submitNowButton.update();
+    sampleNowButton.update();
 
     if (!gotResult) {
         long minutesUntilNextSample = api.fetchMinutesUntilNextSample();
