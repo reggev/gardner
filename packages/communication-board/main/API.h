@@ -1,6 +1,7 @@
 #ifndef __API__
 #define __API__
 
+#include "config.h"
 #include "env.h"
 #include <Arduino.h>
 #include <ArduinoJson.h>

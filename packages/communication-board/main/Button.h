@@ -1,5 +1,5 @@
-#ifndef _Button
-#define _Button
+#ifndef __BUTTON__
+#define __BUTTON__
 
 #include <Arduino.h>
 
@@ -15,7 +15,7 @@ class Button {
   public:
     Button(int buttonPin, bool isInverted = false);
     bool read() { return shouldInvert ? !isClicked : isClicked; };
-    void subscribe(void (*callback)()) { cbPtr = callback; }
+    void onClick(void (*callback)()) { cbPtr = callback; }
     void update() {
         // catch only the button down event
         isClicked = !lastState && digitalRead(pinId);

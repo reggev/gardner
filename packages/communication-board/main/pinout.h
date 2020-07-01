@@ -1,5 +1,5 @@
-#ifndef _pinout
-#define _pinout
+#ifndef __PINOUT__
+#define __PINOUT__
 
 // i2c pins are D1 and D2
 // SPI pins are D5, D6, D7, and D8
