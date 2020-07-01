@@ -8,7 +8,8 @@ void sample() {
     int samples[4];
     for (int ii = 0; ii < 4; ii++) {
         Serial.print(ii);
-        Serial.print("\t\t\t");
+        Serial.print("\t");
+        Serial.print("");
         samples[ii] = analogRead(sensors[ii]);
     }
     Serial.print("\n");
@@ -24,10 +25,12 @@ void sample() {
 void setup() {
     Wire.begin(SLAVE_ADDRESS);
     Serial.begin(9600);
-    for (int sensorPin : sensors) {
+    for (int sensorPin : sensors)
         pinMode(sensorPin, INPUT);
-    }
     Wire.onRequest(sample);
 }
 
-void loop() {}
+void loop() {
+    delay(1000);
+    sample();
+}
