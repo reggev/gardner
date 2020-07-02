@@ -21,9 +21,13 @@
     "url": "git+https://github.com/reggev/gardner.git"
   },
   "scripts": {
+    "mock-server": "json-server -H 0.0.0.0 --watch db.json",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {
     "url": "https://github.com/reggev/gardner/issues"
+  },
+  "devDependencies": {
+    "json-server": "^0.16.1"
   }
 }
