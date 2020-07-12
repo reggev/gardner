@@ -3,5 +3,6 @@
 
 #define MAX_CONNECTION_RETRIES 4
 #define SAMPLE_NOW_PIN D0
+#define SLAVE_ADDRESS 9
 
 #endif
