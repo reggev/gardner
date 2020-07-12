@@ -1,0 +1,18 @@
+capacitive sensors(black) Specifications:
+Size: 98 x 23mm
+Cable Length: approx. 20 cm(7.87 inch)
+Operating Voltage: 3.3 VDC
+Output Voltage: DC 0-3.0V
+Interface: PH2.54-3P
+
+simple sensors Specs:
+6. PCB size: 3cm * 1.6cm
+7. Power indicator (red) and digital switching output indicator (green)
+1. VCC: .3 V-5V
+2. GND: GND
+3. DO: digital output interface (0 and 1) onboard trimmer sets the threshold
+4. AO: Analog Output Interface
+Instructions for use
+2. Module to reach the threshold value is set in the soil moisture, DO port
+output high, when the the soil humidity exceeds a set threshold value, the
+module D0 output low;
