@@ -39,7 +39,11 @@ const writeSample = async sample => {
   const point = sampleToPoint(sample);
   writeApi.writePoint(point);
   try {
-    await writeApi.close();
+    /* 
+      this actually writes to the db
+     theres no need to hold the buffer 
+    */
+    await writeApi.flush();
     return true;
   } catch (error) {
     throw failedToWriteSample;
@@ -51,11 +55,15 @@ const writeSamples = async samples => {
   const points = samples.map(sampleToPoint);
   writeApi.writePoints(points);
   try {
-    await writeApi.close();
+    await writeApi.flush();
     return true;
   } catch (error) {
     throw failedToWriteSamples;
   }
 };
+
+process.on('beforeExit', async () => {
+  await writeApi.close();
+});
 
 module.exports = { writeSample, writeSamples };
