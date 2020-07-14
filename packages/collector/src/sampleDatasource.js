@@ -18,15 +18,15 @@ const writeApi = influxDB.getWriteApi('', bucket);
 /**
  * @typedef {{
  *   sensorId: string | number;
- *   value: number;
+ *   reading: number;
  * }} Sample
  */
 
 /** @type {(sample: Sample) => Promise<boolean>} */
-const writeSample = async ({ sensorId, value }) => {
+const writeSample = async ({ sensorId, reading }) => {
   const point = new Point('soilMoisture')
     .tag('sensorId', sensorId.toString())
-    .floatField('value', value);
+    .floatField('reading', reading);
 
   writeApi.writePoint(point);
   try {
@@ -39,10 +39,10 @@ const writeSample = async ({ sensorId, value }) => {
 
 /** @type {(samples: Sample[]) => Promise<boolean>} */
 const writeSamples = async samples => {
-  const points = samples.map(({ sensorId, value }) =>
+  const points = samples.map(({ sensorId, reading }) =>
     new Point('soilMoisture')
       .tag('sensorId', sensorId.toString())
-      .floatField('value', value)
+      .floatField('reading', reading)
   );
   writeApi.writePoints(points);
   try {

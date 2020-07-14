@@ -1,0 +1,39 @@
+openapi: '3.0.3'
+info:
+  title: gardner samples collecting service
+  version: '1.0.0'
+paths:
+  /sample:
+    post:
+      summary: post a sample
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sample'
+      responses:
+        '201':
+          description: sample was saved
+  /samples:
+    post:
+      summary: post a sample
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Sample'
+      responses:
+        '201':
+          description: sample was saved
+
+components:
+  schemas:
+    Sample:
+      type: object
+      properties:
+        sensorId:
+          type: string
+        reading:
+          type: number
