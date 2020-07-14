@@ -12,6 +12,7 @@
   },
   "scripts": {
     "start": "nodemon ./index.js",
+    "sync:env": "sync-dotenv",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {
@@ -19,12 +20,15 @@
   },
   "dependencies": {
     "body-parser": "^1.19.0",
+    "dotenv-safe": "^8.2.0",
     "express": "^4.17.1",
-    "moment": "^2.27.0"
+    "moment": "^2.27.0",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "dotenv": "^8.2.0",
     "morgan": "^1.10.0",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "sync-dotenv": "^2.6.1"
   }
 }
