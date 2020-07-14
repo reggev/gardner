@@ -33,7 +33,8 @@ components:
     Sample:
       type: object
       properties:
-        sensorId:
+        id:
           type: string
+          description: data should be in the format <boardId::sensorId>
         reading:
           type: number

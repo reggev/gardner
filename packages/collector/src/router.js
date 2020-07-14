@@ -2,7 +2,7 @@ const { Router } = require('express');
 const router = Router();
 
 const { getDurationUntilNextSample } = require('./utils');
-const { writeSample } = require('./sampleDatasource');
+const { writeSample, writeSamples } = require('./sampleDatasource');
 
 // sample 6 times a day
 // 4am, 8am, 12pm, 4pm, 8pm, 12am
@@ -20,7 +20,21 @@ router.get('/next-sample', (req, res) => {
 });
 
 router.post('/sample', async (req, res) => {
-  await writeSample({ sensorId: 1, value: 12 });
+  const { id, reading } = req.body;
+  const [boardId, sensorId] = id.split('::');
+  if (!boardId || !sensorId) return res.sendStatus(400);
+  await writeSample({ signature: id, boardId, sensorId, reading });
+  res.sendStatus(200);
+});
+
+router.post('/samples', async (req, res) => {
+  const { samples } = req.body;
+  const formattedSamples = samples.map(({ id, reading }) => {
+    const [boardId, sensorId] = id.split('::');
+    if (!boardId || !sensorId) return res.sendStatus(400);
+    return { signature: id, boardId, sensorId, reading };
+  });
+  await writeSamples(formattedSamples);
   res.sendStatus(200);
 });
 
