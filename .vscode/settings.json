@@ -18,6 +18,11 @@
     "vector": "cpp"
   },
   "cSpell.words": [
-    "grafana"
+    "grafana",
+    "influx"
+  ],
+  "cSpell.ignoreWords": [
+    "influxdata",
+    "inmemory"
   ]
 }
