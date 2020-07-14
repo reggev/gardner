@@ -1,0 +1,46 @@
+version: '3.7'
+services:
+  collector:
+    build:
+      context: .
+      dockerfile: ./packages/collector/Dockerfile
+    ports:
+      - '5001:4000'
+    environment:
+      - PORT=4000
+      - DB_HOST=db
+      - DB_PORT=8086
+      - DB_NAME=study
+      - DB_USER_NAME=app
+      - DB_PASSWORD=secret
+    volumes:
+      - ./packages/collector:/usr/src/app/packages/collector
+      - /usr/src/app/packages/collector/node_modules
+    networks:
+      - backend
+
+  db:
+    image: influxdb:1.8
+    # ports:
+    #   - '8086:8086'
+    environment:
+      - INFLUXDB_DB=gardner
+      - INFLUXDB_USER=app
+      - INFLUXDB_USER_PASSWORD=secret
+    volumes:
+      - ./db-data:/var/lib/influxdb
+    networks:
+      - backend
+
+  grafana:
+    image: grafana/grafana:7.0.6
+    ports:
+      - '5000:3000'
+    networks:
+      - backend
+    volumes:
+      - ./grafana-data:/var/lib/grafana
+      - ./grafana.conf/custom.ini:/usr/share/grafana/conf/custom.ini
+
+networks:
+  backend:

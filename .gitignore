@@ -1,3 +1,7 @@
+#persistence
+grafana-data
+db-data
+grafana.conf/custom.ini
 # Logs
 logs
 *.log
