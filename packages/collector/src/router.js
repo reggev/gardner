@@ -2,7 +2,9 @@ const { Router } = require('express');
 const router = Router();
 
 const { getDurationUntilNextSample } = require('./utils');
-// for now, sample 6 times a day
+const { writeSample } = require('./sampleDatasource');
+
+// sample 6 times a day
 // 4am, 8am, 12pm, 4pm, 8pm, 12am
 const sampleHours = [0, 4, 8, 12, 16, 20];
 
@@ -17,8 +19,9 @@ router.get('/next-sample', (req, res) => {
   });
 });
 
-router.post('/sample', (req, res) => {
-  res.send('accepted sample');
+router.post('/sample', async (req, res) => {
+  await writeSample({ sensorId: 1, value: 12 });
+  res.sendStatus(200);
 });
 
 module.exports = router;

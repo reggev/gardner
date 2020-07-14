@@ -6,8 +6,8 @@ const { DB_HOST, DB_PORT, DB_NAME, DB_USER_NAME, DB_PASSWORD } = process.env;
 const retentionPolicy = 'autogen';
 
 const bucket = `${DB_NAME}/${retentionPolicy}`;
-
-const clientOptions: ClientOptions = {
+/** @typedef {import('@influxdata/influxdb-client').ClientOptions} ClientOptions */
+const clientOptions = {
   url: `http://${DB_HOST}:${DB_PORT}`,
   token: `${DB_USER_NAME}:${DB_PASSWORD}`,
 };
