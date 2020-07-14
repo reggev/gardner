@@ -10,7 +10,7 @@ services:
       - PORT=4000
       - DB_HOST=db
       - DB_PORT=8086
-      - DB_NAME=study
+      - DB_NAME=gardner
       - DB_USER_NAME=app
       - DB_PASSWORD=secret
     volumes:
