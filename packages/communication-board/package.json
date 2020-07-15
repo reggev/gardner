@@ -21,13 +21,15 @@
     "url": "git+https://github.com/reggev/gardner.git"
   },
   "scripts": {
-    "mock-server": "json-server --port 4000 --watch db.json",
+    "mock-server": "PORT=4000 nodemon ./mock-server",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {
     "url": "https://github.com/reggev/gardner/issues"
   },
   "devDependencies": {
-    "json-server": "^0.16.1"
+    "body-parser": "^1.19.0",
+    "json-server": "^0.16.1",
+    "nodemon": "^2.0.4"
   }
 }

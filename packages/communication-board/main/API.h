@@ -17,6 +17,30 @@ class API {
   private:
     bool isPending = false;
     String hostUri = HOST_URI;
+    String post(String url, String body) {
+        if (http.begin(client, url)) {
+            Serial.println("[HTTP] POST:: " + url);
+            Serial.println(body);
+            digitalWrite(LED_BUILTIN, LOW);
+            int httpCode = http.POST(body);
+            digitalWrite(LED_BUILTIN, LOW);
+            // httpCode will be negative on error
+            if (httpCode > 0) {
+                Serial.printf("[HTTP] POST... code: %d\n", httpCode);
+                if (httpCode == HTTP_CODE_OK ||
+                    httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
+                    return http.getString();
+                }
+            } else {
+                Serial.printf("[HTTP] POST... failed, error: %s\n",
+                              http.errorToString(httpCode).c_str());
+            }
+            http.end();
+        } else {
+            Serial.printf("[HTTP} Unable to connect\n");
+        }
+        return "";
+    }
     String fetch(String uri) {
         const String fetchUri = uri;
         const String failError = "";
@@ -53,6 +77,24 @@ class API {
         DynamicJsonDocument doc(1024);
         deserializeJson(doc, payload);
         double minutes = doc["minutes"].as<double>();
+        return minutes;
+    }
+    double postSamples(int boardId, int (&samples)[4]) {
+        StaticJsonDocument<400>
+            doc; // estimated using https://arduinojson.org/v6/assistant/
+        JsonArray samplesCollection = doc.createNestedArray("samples");
+        JsonObject board = samplesCollection.createNestedObject();
+        board["boardId"] = boardId;
+        JsonArray readings = board.createNestedArray("readings");
+        for (int sample : samples) {
+            readings.add(sample);
+        }
+        String body;
+        serializeJson(doc, body);
+        String payload = post(hostUri + "/samples", body);
+        DynamicJsonDocument response(1024);
+        deserializeJson(response, payload);
+        double minutes = response["minutes"].as<double>();
         return minutes;
     }
 };
