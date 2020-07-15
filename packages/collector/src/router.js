@@ -20,22 +20,34 @@ router.get('/next-sample', (req, res) => {
 });
 
 router.post('/sample', async (req, res) => {
-  const { id, reading } = req.body;
-  const [boardId, sensorId] = id.split('::');
-  if (!boardId || !sensorId) return res.sendStatus(400);
-  await writeSample({ signature: id, boardId, sensorId, reading });
+  const { boardId, reading, sensorId } = req.body;
+  if (!boardId || !reading) return res.sendStatus(400);
+  const signature = `${boardId}::${sensorId}`;
+  await writeSample({ signature, boardId, sensorId, reading });
   res.sendStatus(200);
 });
 
 router.post('/samples', async (req, res) => {
-  const { samples } = req.body;
-  const formattedSamples = samples.map(({ id, reading }) => {
-    const [boardId, sensorId] = id.split('::');
-    if (!boardId || !sensorId) return res.sendStatus(400);
-    return { signature: id, boardId, sensorId, reading };
+  /** @typedef {{ id: number; readings: number[] }} Board */
+  /** @type {{ boards: Board[] }} */
+  const { boards } = req.body;
+
+  const formattedSamples = boards.map(({ id, readings }) => {
+    return readings.map((reading, sensorId) => {
+      const signature = `${id}::${sensorId}`;
+      return { signature, boardId: id, sensorId, reading };
+    });
   });
-  await writeSamples(formattedSamples);
-  res.sendStatus(200);
+  const flattenedSamples = formattedSamples.reduce(
+    (acc, group) => [...acc, ...group],
+    []
+  );
+  await writeSamples(flattenedSamples);
+  const duration = getDurationUntilNextSample(sampleHours);
+  res.status(201);
+  return res.json({
+    minutes: duration.asMinutes(),
+  });
 });
 
 module.exports = router;

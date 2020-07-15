@@ -3,6 +3,17 @@ info:
   title: gardner samples collecting service
   version: '1.0.0'
 paths:
+  /next-sample:
+    get:
+      summary: get minutes until next sample
+      responses:
+        '200':
+          description: minutes until next sample
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Minutes'
+
   /sample:
     post:
       summary: post a sample
@@ -14,6 +25,7 @@ paths:
       responses:
         '201':
           description: sample was saved
+
   /samples:
     post:
       summary: post a sample
@@ -21,20 +33,42 @@ paths:
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Sample'
+              type: object
+              properties:
+                boards:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Board'
       responses:
         '201':
           description: sample was saved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Minutes'
 
 components:
   schemas:
     Sample:
       type: object
       properties:
-        id:
-          type: string
-          description: data should be in the format <boardId::sensorId>
+        boardId:
+          type: number
+        sensorId:
+          type: number
         reading:
+          type: number
+    Board:
+      type: object
+      properties:
+        id:
+          type: number
+        readings:
+          type: array
+          items:
+            type: number
+    Minutes:
+      type: object
+      properties:
+        minutes:
           type: number

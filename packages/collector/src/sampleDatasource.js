@@ -17,8 +17,8 @@ const writeApi = influxDB.getWriteApi('', bucket);
 
 /**
  * @typedef {{
- *   boardId: string;
- *   sensorId: string;
+ *   boardId: number;
+ *   sensorId: number;
  *   signature: string;
  *   reading: number;
  * }} Sample
@@ -28,8 +28,8 @@ const writeApi = influxDB.getWriteApi('', bucket);
 /** @type {(sample: Sample) => Point} */
 const sampleToPoint = ({ signature, boardId, sensorId, reading }) => {
   return new Point('soilMoisture')
-    .tag('sensorId', sensorId)
-    .tag('boardId', boardId)
+    .tag('sensorId', sensorId.toString())
+    .tag('boardId', boardId.toString())
     .tag('signature', signature)
     .floatField('reading', reading);
 };
