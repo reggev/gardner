@@ -19,6 +19,7 @@ bool hasSampleDuration = false;
 bool isFirstRun = true;
 
 void restartTimer(double minutesUntilNextSample) {
+    sampleTimer.stop();
     sampleTimer.set(minutesUntilNextSample * 60 * 1000);
     sampleTimer.start();
 }
@@ -35,6 +36,7 @@ void handleRead(int (&samples)[4]) {
     }
     Serial.print("\n");
     double minutesUntilNextSample = api.postSamples(0, samples);
+
     restartTimer(minutesUntilNextSample);
 }
 
