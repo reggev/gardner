@@ -19,6 +19,7 @@ class API {
     String hostUri = HOST_URI;
     String post(String url, String body) {
         if (http.begin(client, url)) {
+            http.addHeader("Content-Type", "application/json");
             Serial.println("[HTTP] POST:: " + url);
             Serial.println(body);
             digitalWrite(LED_BUILTIN, LOW);
