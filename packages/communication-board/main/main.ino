@@ -29,7 +29,7 @@ void handleRead(int (&samples)[4]) {
 
 void setup() {
     Serial.begin(115200);
-    // connection.connect();
+    connection.connect();
     delay(4000);
     sampleNowButton.onClick(handleClick);
     sensorBoard.onRead(handleRead);
@@ -38,21 +38,21 @@ void setup() {
 }
 
 void loop() {
-    // connection.update();
-    // if (connection.hasFailed)
-    //     return;
-    // if (!connection.isConnected)
-    //     return;
+    connection.update();
+    if (connection.hasFailed)
+        return;
+    if (!connection.isConnected)
+        return;
 
     sampleNowButton.update();
     sensorBoard.update();
-    // if (!gotResult) {
-    //     long minutesUntilNextSample = api.fetchMinutesUntilNextSample();
-    //     // @todo - handle fail case
-    //     // the object returned should be either data or fail
-    //     Serial.println("minutesUntilNextSample");
-    //     Serial.println(minutesUntilNextSample);
-    //     gotResult = true;
-    // }
+    if (!gotResult) {
+        double minutesUntilNextSample = api.fetchMinutesUntilNextSample();
+        // @todo - handle fail case
+        // the object returned should be either data or fail
+        Serial.println("minutesUntilNextSample");
+        Serial.println(minutesUntilNextSample * 60 * 1000);
+        gotResult = true;
+    }
     return;
 }

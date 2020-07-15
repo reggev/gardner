@@ -48,11 +48,11 @@ class API {
         String payload = fetch(hostUri + "/");
         return payload;
     }
-    long fetchMinutesUntilNextSample() {
+    double fetchMinutesUntilNextSample() {
         String payload = fetch(hostUri + "/next-sample");
         DynamicJsonDocument doc(1024);
         deserializeJson(doc, payload);
-        long minutes = doc["minutes"];
+        double minutes = doc["minutes"].as<double>();
         return minutes;
     }
 };

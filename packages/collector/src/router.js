@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
 router.get('/next-sample', (req, res) => {
   const duration = getDurationUntilNextSample(sampleHours);
   return res.json({
-    minutes: Math.floor(duration.asMinutes()),
+    minutes: duration.asMinutes(),
   });
 });
 
