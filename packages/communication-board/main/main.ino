@@ -36,7 +36,7 @@ void handleRead(int (&samples)[4]) {
     }
     Serial.print("\n");
     double minutesUntilNextSample = api.postSamples(0, samples);
-
+    Serial.println("minutesUntilNextSample: " + (String)minutesUntilNextSample);
     restartTimer(minutesUntilNextSample);
 }
 

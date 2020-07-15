@@ -11,13 +11,37 @@
 #include <WiFiClient.h>
 
 WiFiClient client;
-HTTPClient http;
 
 class API {
   private:
     bool isPending = false;
     String hostUri = HOST_URI;
+
+    String handleRequest(HTTPClient& http, int httpCode, String method,
+                         String failError) {
+        // httpCode will be negative on error
+        if (httpCode > 0) {
+            Serial.println("[HTTP] " + method +
+                           "... code: " + (String)httpCode);
+
+            if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_CREATED) {
+                String payload = http.getString();
+                http.end();
+                return payload;
+            }
+        } else {
+            Serial.println("[HTTP] " + method + "... failed, error: %s" +
+                           (String)http.errorToString(httpCode).c_str());
+        }
+        http.end();
+        return failError;
+    }
+
     String post(String url, String body) {
+        HTTPClient http;
+
+        const String failError = "";
+
         if (http.begin(client, url)) {
             http.addHeader("Content-Type", "application/json");
             Serial.println("[HTTP] POST:: " + url);
@@ -25,24 +49,16 @@ class API {
             digitalWrite(LED_BUILTIN, LOW);
             int httpCode = http.POST(body);
             digitalWrite(LED_BUILTIN, LOW);
-            // httpCode will be negative on error
-            if (httpCode > 0) {
-                Serial.printf("[HTTP] POST... code: %d\n", httpCode);
-                if (httpCode == HTTP_CODE_OK ||
-                    httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
-                    return http.getString();
-                }
-            } else {
-                Serial.printf("[HTTP] POST... failed, error: %s\n",
-                              http.errorToString(httpCode).c_str());
-            }
-            http.end();
+            return handleRequest(http, httpCode, "POST", failError);
         } else {
             Serial.printf("[HTTP} Unable to connect\n");
         }
-        return "";
+        return failError;
     }
+
     String fetch(String uri) {
+        HTTPClient http;
+
         const String fetchUri = uri;
         const String failError = "";
         if (http.begin(client, fetchUri)) {
@@ -50,18 +66,7 @@ class API {
             digitalWrite(LED_BUILTIN, LOW);
             int httpCode = http.GET();
             digitalWrite(LED_BUILTIN, LOW);
-            // httpCode will be negative on error
-            if (httpCode > 0) {
-                Serial.printf("[HTTP] GET... code: %d\n", httpCode);
-                if (httpCode == HTTP_CODE_OK ||
-                    httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
-                    return http.getString();
-                }
-            } else {
-                Serial.printf("[HTTP] GET... failed, error: %s\n",
-                              http.errorToString(httpCode).c_str());
-            }
-            http.end();
+            return handleRequest(http, httpCode, "GET", failError);
         } else {
             Serial.printf("[HTTP} Unable to connect\n");
         }
