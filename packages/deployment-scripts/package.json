@@ -1,0 +1,29 @@
+{
+  "name": "@gardner/deployment-scripts",
+  "version": "0.0.1",
+  "description": "This package contains a few startup scripts for each docker Gardner eventually runs on a raspberry pi with an arm processor. Thus it cannot run docker-compose. Also, Kubernetes is an overkill for such a simple deployment.",
+  "author": "reggev <reggev.am@gmail.com>",
+  "homepage": "https://github.com/reggev/gardner#readme",
+  "license": "ISC",
+  "main": "lib/deployment-scripts.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reggev/gardner.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/reggev/gardner/issues"
+  }
+}
