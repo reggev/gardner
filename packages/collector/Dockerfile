@@ -1,4 +1,4 @@
-FROM node:13.6.0-alpine3.10 
+FROM node:14.5.0-stretch-slim
 # environment
 ENV node_env=development
 WORKDIR /usr/src/app
