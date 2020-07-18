@@ -40,7 +40,7 @@ services:
       - backend
     volumes:
       - ./grafana-data:/var/lib/grafana
-      - ./grafana.conf/custom.ini:/usr/share/grafana/conf/custom.ini
+      - ./packages/deployment-scripts/grafana.conf/custom.ini:/usr/share/grafana/conf/custom.ini
 
 networks:
   backend:
