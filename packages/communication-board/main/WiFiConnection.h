@@ -42,7 +42,7 @@ class WiFiConnectionClient {
             return false;
         }
         if ((WiFiMulti.run() != WL_CONNECTED)) {
-            Serial.printf("[SETUP] %d/%d, connection retries\n", retries,
+            Serial.printf("[SETUP]::%d/%d, connection retries\n", retries,
                           maxConnectionRetries);
             retries++;
             if (retries > maxConnectionRetries) {
@@ -54,7 +54,7 @@ class WiFiConnectionClient {
         } else {
             _isConnected = true;
             retries = 0;
-            Serial.printf("[SETUP] connected to %s\n", ssid);
+            Serial.printf("[SETUP]::connected to %s\n", ssid);
             // pendingLed.Stop();
             return _isConnected;
         }

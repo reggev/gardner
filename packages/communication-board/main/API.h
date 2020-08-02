@@ -21,7 +21,7 @@ class API {
                          String failError) {
         // httpCode will be negative on error
         if (httpCode > 0) {
-            Serial.println("[HTTP] " + method +
+            Serial.println("[HTTP]::" + method +
                            "... code: " + (String)httpCode);
 
             if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_CREATED) {
@@ -30,7 +30,7 @@ class API {
                 return payload;
             }
         } else {
-            Serial.println("[HTTP] " + method + "... failed, error: %s" +
+            Serial.println("[HTTP]::" + method + "... failed, error: %s" +
                            (String)http.errorToString(httpCode).c_str());
         }
         http.end();
@@ -44,14 +44,13 @@ class API {
 
         if (http.begin(client, url)) {
             http.addHeader("Content-Type", "application/json");
-            Serial.println("[HTTP] POST:: " + url);
-            Serial.println(body);
+            Serial.println("[HTTP]::POST " + url);
             digitalWrite(LED_BUILTIN, LOW);
             int httpCode = http.POST(body);
             digitalWrite(LED_BUILTIN, LOW);
             return handleRequest(http, httpCode, "POST", failError);
         } else {
-            Serial.printf("[HTTP} Unable to connect\n");
+            Serial.printf("[HTTP]::Unable to connect\n");
         }
         return failError;
     }
@@ -62,13 +61,13 @@ class API {
         const String fetchUri = uri;
         const String failError = "";
         if (http.begin(client, fetchUri)) {
-            Serial.println("[HTTP] GET:: " + fetchUri);
+            Serial.println("[HTTP]::GET " + fetchUri);
             digitalWrite(LED_BUILTIN, LOW);
             int httpCode = http.GET();
             digitalWrite(LED_BUILTIN, LOW);
             return handleRequest(http, httpCode, "GET", failError);
         } else {
-            Serial.printf("[HTTP} Unable to connect\n");
+            Serial.printf("[HTTP]::Unable to connect\n");
         }
         return failError;
     }
