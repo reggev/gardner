@@ -2,6 +2,7 @@
 grafana-data
 db-data
 grafana.conf/custom.ini
+
 # Logs
 logs
 *.log
@@ -75,6 +76,8 @@ web_modules/
 # dotenv environment variables file
 .env
 .env.test
+.server.env
+.influx.env
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
