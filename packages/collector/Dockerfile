@@ -1,11 +1,11 @@
-FROM node:14.5.0-stretch-slim
+FROM node:14.5.0-stretch-slim 
 # environment
 ENV node_env=development
 WORKDIR /usr/src/app
 
 # dependencies
 COPY package.json .
-COPY yarn.lock .
+# COPY yarn.lock .
 COPY packages/collector/package.json ./packages/collector/
 
 # install dependencies
