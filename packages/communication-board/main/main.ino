@@ -1,7 +1,7 @@
 #include "API.h"
 #include "Button.h"
-#include "Sensors.h"
 #include "WiFiConnection.h"
+#include "boardsConfig.h"
 #include "config.h"
 #include "env.h"
 #include "pinout.h"
@@ -11,10 +11,12 @@
 WiFiConnectionClient connection;
 API api;
 
-Neotimer sampleTimer = Neotimer(0); // 1 second timer
+Neotimer sampleTimer = Neotimer(0);
 
 Button sampleNowButton(SAMPLE_NOW_PIN);
-Sensors sensorBoard(SLAVE_ADDRESS);
+
+BoardsCollection sensorBoards = BoardsCollection();
+
 bool hasSampleDuration = false;
 bool isFirstRun = true;
 
@@ -24,30 +26,28 @@ void restartTimer(double minutesUntilNextSample) {
     sampleTimer.start();
 }
 
-void sampleSensors() {
-    Serial.println("opening a new read");
-    sensorBoard.startRead();
-}
-
-void handleRead(int (&samples)[4]) {
-    Serial.print("samples: ");
+void handleRead(int boardId, int (&samples)[4]) {
+    Serial.print("[READING]::samples: ");
     for (int sample : samples) {
         Serial.printf("%d\t", sample);
     }
     Serial.print("\n");
-    double minutesUntilNextSample = api.postSamples(0, samples);
-    Serial.println("minutesUntilNextSample: " + (String)minutesUntilNextSample);
+    double minutesUntilNextSample = api.postSamples(boardId, samples);
+    Serial.println("[INFO]::minutesUntilNextSample: " +
+                   (String)minutesUntilNextSample);
     restartTimer(minutesUntilNextSample);
 }
 
 void setup() {
     Serial.begin(115200);
+    sensorBoards.setup(boardsConfiguration, CONFIGURED_BOARDS);
     connection.connect();
     delay(4000);
-    sampleNowButton.onClick(sampleSensors);
-    sensorBoard.onRead(handleRead);
+    sampleNowButton.onClick([]() { sensorBoards.sampleAll(); });
+    for (int ii = 0; ii < CONFIGURED_BOARDS; ii++) {
+        sensorBoards.boards[ii].onRead(handleRead);
+    }
     Wire.begin();
-    Serial.println("up and running!");
     sampleTimer.start();
 }
 
@@ -59,13 +59,17 @@ void loop() {
         return;
 
     sampleNowButton.update();
-    sensorBoard.update();
+
+    for (int ii = 0; ii < CONFIGURED_BOARDS; ii++) {
+        sensorBoards.boards[ii].update();
+    }
+
     if (sampleTimer.done()) {
         if (isFirstRun) {
             double minutesUntilNextSample = api.fetchMinutesUntilNextSample();
             if (minutesUntilNextSample) {
                 isFirstRun = false;
-                Serial.printf("minutes until next sample %f\n",
+                Serial.printf("[INFO]::minutes until next sample %f\n",
                               minutesUntilNextSample);
                 restartTimer(minutesUntilNextSample);
             } else {
@@ -73,7 +77,7 @@ void loop() {
                 restartTimer(1000);
             }
         } else {
-            sampleSensors();
+            sensorBoards.sampleAll();
         }
     }
     return;
