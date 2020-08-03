@@ -26,10 +26,10 @@ void restartTimer(double minutesUntilNextSample) {
     sampleTimer.start();
 }
 
-void handleRead(int boardId, int (&samples)[4]) {
+void handleRead(int boardId, double (&samples)[4]) {
     Serial.print("[READING]::samples: ");
-    for (int sample : samples) {
-        Serial.printf("%d\t", sample);
+    for (double sample : samples) {
+        Serial.printf("%f\t", sample * 100);
     }
     Serial.print("\n");
     double minutesUntilNextSample = api.postSamples(boardId, samples);

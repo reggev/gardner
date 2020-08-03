@@ -3,10 +3,14 @@
 
 SensorBoard::SensorBoard() {}
 
-SensorBoard::SensorBoard(int id, int address, struct SensorConfig sensors[4]) {
+SensorBoard::SensorBoard(int id, int address,
+                         struct SensorConfig sensorConfigs[4]) {
     char buffer[255];
-    sprintf(buffer, "[SETUP_BOARD]::id: %d, address %d", id, address);
     this->address = address;
     this->id = id;
-    this->sensors = sensors;
+    for (int ii = 0; ii < 4; ii++)
+        this->sensors[ii] = sensorConfigs[ii];
+
+    sprintf(buffer, "[SETUP_BOARD]::id: %d, address %d\n", id, address);
+    Serial.print(buffer);
 }

@@ -2,6 +2,7 @@
 #define __BOARDS_CONFIGURATIONS__
 #include "SensorBoard.h"
 #define CONFIGURED_BOARDS 1
+
 struct BoardConfig boardsConfiguration[] = {{
     id : 0,
     address : 9,

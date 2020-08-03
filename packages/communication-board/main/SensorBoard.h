@@ -28,11 +28,17 @@ typedef struct BoardConfig {
 class SensorBoard {
   private:
     int address;
-    void (*cb)(int boardId, int (&samples)[4]);
+    void (*cb)(int boardId, double (&samples)[4]);
     bool shouldRead = false;
-    struct SensorConfig* sensors;
+    struct SensorConfig sensors[4];
+
     /* scaleSample to match the wet/dry values from the sensor */
-    int scaleSample(int sensorId, int sample) { return sample; }
+    double scaleSample(int sensorIdx, int sample) {
+        char buffer[255];
+        SensorConfig sensor = sensors[sensorIdx];
+        return map(sample, sensor.dryValue, sensor.wetValue, 0, 100) / 100.0;
+    }
+
     void readSensors() {
         char buffer[255];
         sprintf(buffer, "[SAMPLE_START]::boardId %d\n", id);
@@ -42,7 +48,7 @@ class SensorBoard {
         deserializeMsgPack(doc, Wire);
         JsonArray collection = doc.as<JsonArray>();
 
-        int samples[4];
+        double samples[4];
         int idx = 0;
         // this implicitly converts the sample to an int
         for (int sample : collection) {
@@ -57,15 +63,18 @@ class SensorBoard {
 
   public:
     int id;
+
     SensorBoard();
     SensorBoard(int id, int address, struct SensorConfig sensors[4]);
-    void onRead(void (*callback)(int id, int (&samples)[4])) {
+
+    void onRead(void (*callback)(int id, double (&samples)[4])) {
         if (callback == nullptr) {
             Serial.println("[ERROR]::onRead got nullptr, board" + id);
         } else {
             cb = callback;
         }
     }
+
     /* initialize read on the next cycle */
     void startReading() {
         char buffer[255];
@@ -73,6 +82,7 @@ class SensorBoard {
         Serial.print(buffer);
         shouldRead = true;
     }
+
     void update() {
         if (!shouldRead)
             return;
@@ -91,32 +101,31 @@ struct BoardsCollection {
     struct SensorBoard* boards;
     void setup(struct BoardConfig configurations[], int size) {
         char buffer[255];
-        this->size = size;
-        this->boards = new SensorBoard[this->size];
-        Serial.println("[SETUP_BOARDS]::initalized boards array");
-        int boardsInitialized = 0;
-        for (int ii = 0; ii < this->size; ii++) {
-            BoardConfig config = configurations[ii];
+        this->boards = new SensorBoard[size];
+        Serial.println("[SETUP_BOARDS]::initalized boards array\n");
+        int boardIdx = 0;
+        for (boardIdx = 0; boardIdx < size; boardIdx++) {
+            BoardConfig config = configurations[boardIdx];
             SensorBoard board =
                 SensorBoard(config.id, config.address, config.sensors);
-            sprintf(buffer, "[SETUP_BOARDS]::board %d\n", board.id);
-            Serial.print(buffer);
-            boards[ii] = board;
-            boardsInitialized++;
+            boards[boardIdx] = board;
         }
-        sprintf(buffer, "[SETUP_BOARDS]::created %d boards\n",
-                boardsInitialized);
+        this->size = boardIdx;
+        sprintf(buffer, "[SETUP_BOARDS]::created %d boards\n", boardIdx);
         Serial.print(buffer);
-    };
+    }
+
     void sampleAll() {
         // TODO:: try again to sample directly avoiding the need for update
         for (int ii = 0; ii < this->size; ii++)
             boards[ii].startReading();
-    };
-    void onRead(void (*callback)(int id, int (&samples)[4])) {
+    }
+
+    void onRead(void (*callback)(int id, double (&samples)[4])) {
         for (int ii = 0; ii < this->size; ii++)
             boards[ii].onRead(callback);
     }
+
     void update() {
         for (int ii = 0; ii < this->size; ii++)
             boards[ii].update();

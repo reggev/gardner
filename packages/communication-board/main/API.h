@@ -84,14 +84,14 @@ class API {
         double minutes = doc["minutes"].as<double>();
         return minutes;
     }
-    double postSamples(int boardId, int (&samples)[4]) {
+    double postSamples(int boardId, double (&samples)[4]) {
         StaticJsonDocument<400>
             doc; // estimated using https://arduinojson.org/v6/assistant/
         JsonArray samplesCollection = doc.createNestedArray("boards");
         JsonObject board = samplesCollection.createNestedObject();
         board["id"] = boardId;
         JsonArray readings = board.createNestedArray("readings");
-        for (int sample : samples) {
+        for (double sample : samples) {
             readings.add(sample);
         }
         String body;
