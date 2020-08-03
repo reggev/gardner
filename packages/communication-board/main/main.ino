@@ -1,5 +1,6 @@
+#include <Bounce2.h>
+
 #include "API.h"
-#include "Button.h"
 #include "WiFiConnection.h"
 #include "boardsConfig.h"
 #include "config.h"
@@ -15,8 +16,7 @@ BoardsCollection sensorBoards;
 
 Neotimer sampleTimer = Neotimer(0);
 
-// TODO:: replace with 3rd party library with debouncing
-Button sampleNowButton(SAMPLE_NOW_PIN);
+Bounce debouncer = Bounce();
 
 bool isFirstRun = true;
 
@@ -42,7 +42,8 @@ void setup() {
     Serial.begin(115200);
     sensorBoards.setup(boardsConfiguration, CONFIGURED_BOARDS);
     sensorBoards.onRead(handleRead);
-    sampleNowButton.onClick([]() { sensorBoards.sampleAll(); });
+    debouncer.attach(SAMPLE_NOW_PIN, INPUT);
+    debouncer.interval(25);
     connection.connect();
     delay(4000);
     Wire.begin();
@@ -54,8 +55,10 @@ void loop() {
     if (connection.hasFailed || !connection.isConnected)
         return;
 
-    sampleNowButton.update();
+    debouncer.update();
     sensorBoards.update();
+    if (debouncer.rose())
+        sensorBoards.sampleAll();
 
     if (sampleTimer.done()) {
         if (isFirstRun) {
