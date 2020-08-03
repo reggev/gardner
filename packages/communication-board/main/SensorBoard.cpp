@@ -1,13 +1,12 @@
 #include "SensorBoard.h"
 #include <stdio.h>
 
-SensorBoard::SensorBoard() { Serial.println("setup empty board"); }
+SensorBoard::SensorBoard() {}
 
-SensorBoard::SensorBoard(int id, int address) {
+SensorBoard::SensorBoard(int id, int address, struct SensorConfig sensors[4]) {
     char buffer[255];
     sprintf(buffer, "[SETUP_BOARD]::id: %d, address %d", id, address);
     this->address = address;
     this->id = id;
+    this->sensors = sensors;
 }
-
-BoardsCollection::BoardsCollection() {}

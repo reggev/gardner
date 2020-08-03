@@ -30,6 +30,9 @@ class SensorBoard {
     int address;
     void (*cb)(int boardId, int (&samples)[4]);
     bool shouldRead = false;
+    struct SensorConfig* sensors;
+    /* scaleSample to match the wet/dry values from the sensor */
+    int scaleSample(int sensorId, int sample) { return sample; }
     void readSensors() {
         char buffer[255];
         sprintf(buffer, "[SAMPLE_START]::boardId %d\n", id);
@@ -43,7 +46,8 @@ class SensorBoard {
         int idx = 0;
         // this implicitly converts the sample to an int
         for (int sample : collection) {
-            samples[idx] = sample;
+            // scale the sample by it's dry and wet values
+            samples[idx] = scaleSample(idx, sample);
             idx++;
         }
         sprintf(buffer, "[SAMPLE_END]::boardId %d\n", this->id);
@@ -54,7 +58,7 @@ class SensorBoard {
   public:
     int id;
     SensorBoard();
-    SensorBoard(int id, int address);
+    SensorBoard(int id, int address, struct SensorConfig sensors[4]);
     void onRead(void (*callback)(int id, int (&samples)[4])) {
         if (callback == nullptr) {
             Serial.println("[ERROR]::onRead got nullptr, board" + id);
@@ -62,6 +66,7 @@ class SensorBoard {
             cb = callback;
         }
     }
+    /* initialize read on the next cycle */
     void startReading() {
         char buffer[255];
         sprintf(buffer, "[INFO]::initialize reading on board %d\n", id);
@@ -84,7 +89,6 @@ class SensorBoard {
 struct BoardsCollection {
     int size;
     struct SensorBoard* boards;
-    BoardsCollection();
     void setup(struct BoardConfig configurations[], int size) {
         char buffer[255];
         this->size = size;
@@ -93,7 +97,8 @@ struct BoardsCollection {
         int boardsInitialized = 0;
         for (int ii = 0; ii < this->size; ii++) {
             BoardConfig config = configurations[ii];
-            SensorBoard board = SensorBoard(config.id, config.address);
+            SensorBoard board =
+                SensorBoard(config.id, config.address, config.sensors);
             sprintf(buffer, "[SETUP_BOARDS]::board %d\n", board.id);
             Serial.print(buffer);
             boards[ii] = board;
@@ -104,10 +109,18 @@ struct BoardsCollection {
         Serial.print(buffer);
     };
     void sampleAll() {
-        for (int ii = 0; ii < this->size; ii++) {
+        // TODO:: try again to sample directly avoiding the need for update
+        for (int ii = 0; ii < this->size; ii++)
             boards[ii].startReading();
-        }
     };
+    void onRead(void (*callback)(int id, int (&samples)[4])) {
+        for (int ii = 0; ii < this->size; ii++)
+            boards[ii].onRead(callback);
+    }
+    void update() {
+        for (int ii = 0; ii < this->size; ii++)
+            boards[ii].update();
+    }
 };
 
 #endif // __SENSOR_BOARD__

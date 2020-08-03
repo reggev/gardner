@@ -8,16 +8,16 @@
 #include <Arduino.h>
 #include <neotimer.h>
 
+// TODO:: add a global logger
 WiFiConnectionClient connection;
 API api;
+BoardsCollection sensorBoards;
 
 Neotimer sampleTimer = Neotimer(0);
 
+// TODO:: replace with 3rd party library with debouncing
 Button sampleNowButton(SAMPLE_NOW_PIN);
 
-BoardsCollection sensorBoards = BoardsCollection();
-
-bool hasSampleDuration = false;
 bool isFirstRun = true;
 
 void restartTimer(double minutesUntilNextSample) {
@@ -41,28 +41,21 @@ void handleRead(int boardId, int (&samples)[4]) {
 void setup() {
     Serial.begin(115200);
     sensorBoards.setup(boardsConfiguration, CONFIGURED_BOARDS);
+    sensorBoards.onRead(handleRead);
+    sampleNowButton.onClick([]() { sensorBoards.sampleAll(); });
     connection.connect();
     delay(4000);
-    sampleNowButton.onClick([]() { sensorBoards.sampleAll(); });
-    for (int ii = 0; ii < CONFIGURED_BOARDS; ii++) {
-        sensorBoards.boards[ii].onRead(handleRead);
-    }
     Wire.begin();
     sampleTimer.start();
 }
 
 void loop() {
     connection.update();
-    if (connection.hasFailed)
-        return;
-    if (!connection.isConnected)
+    if (connection.hasFailed || !connection.isConnected)
         return;
 
     sampleNowButton.update();
-
-    for (int ii = 0; ii < CONFIGURED_BOARDS; ii++) {
-        sensorBoards.boards[ii].update();
-    }
+    sensorBoards.update();
 
     if (sampleTimer.done()) {
         if (isFirstRun) {
