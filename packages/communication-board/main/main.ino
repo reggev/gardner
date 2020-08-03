@@ -32,6 +32,8 @@ void handleRead(int boardId, double (&samples)[4]) {
         Serial.printf("%f\t", sample * 100);
     }
     Serial.print("\n");
+    // TODO::unify the samples from all the boards before submitting to the
+    // server
     double minutesUntilNextSample = api.postSamples(boardId, samples);
     Serial.println("[INFO]::minutesUntilNextSample: " +
                    (String)minutesUntilNextSample);
