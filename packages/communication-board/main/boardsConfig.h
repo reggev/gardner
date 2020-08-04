@@ -8,13 +8,13 @@ struct BoardConfig boardsConfiguration[] = {{
     address : 9,
     sensors : {// A0
                // boardId, dryValue, wetValue
-               {1, 804, 368},
+               {1, 658, 377},
                // A1
-               {2, 648, 358},
+               {2, 661, 366},
                // A2
-               {3, 633, 355},
+               {3, 657, 360},
                // A3
-               {4, 703, 354}}
+               {4, 661, 365}}
 }};
 
 #endif // __BOARDS_CONFIGURATIONS__
