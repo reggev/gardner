@@ -25,7 +25,7 @@ void setup() {
     Wire.begin(SLAVE_ADDRESS);
     Serial.begin(115200);
     for (int sensorPin : sensors)
-        pinMode(sensorPin, INPUT_PULLUP);
+        pinMode(sensorPin, INPUT);
     Wire.onRequest(sample);
 }
 
