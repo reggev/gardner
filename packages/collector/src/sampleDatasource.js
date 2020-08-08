@@ -19,18 +19,16 @@ const writeApi = influxDB.getWriteApi('', bucket);
  * @typedef {{
  *   boardId: number;
  *   sensorId: number;
- *   signature: string;
  *   reading: number;
  * }} Sample
  * @typedef {import('@influxdata/influxdb-client').Point} Point
  */
 
 /** @type {(sample: Sample) => Point} */
-const sampleToPoint = ({ signature, boardId, sensorId, reading }) => {
+const sampleToPoint = ({ boardId, sensorId, reading }) => {
   return new Point('soilMoisture')
     .tag('sensorId', sensorId.toString())
     .tag('boardId', boardId.toString())
-    .tag('signature', signature)
     .floatField('reading', reading);
 };
 

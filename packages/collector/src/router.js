@@ -22,8 +22,7 @@ router.get('/next-sample', (req, res) => {
 router.post('/sample', async (req, res) => {
   const { boardId, reading, sensorId } = req.body;
   if (!boardId || !reading) return res.sendStatus(400);
-  const signature = `${boardId}::${sensorId}`;
-  await writeSample({ signature, boardId, sensorId, reading });
+  await writeSample({ boardId, sensorId, reading });
   res.sendStatus(200);
 });
 
@@ -34,8 +33,7 @@ router.post('/samples', async (req, res) => {
 
   const formattedSamples = boards.map(({ id, readings }) => {
     return readings.map((reading, sensorId) => {
-      const signature = `${id}::${sensorId}`;
-      return { signature, boardId: id, sensorId, reading };
+      return { boardId: id, sensorId, reading };
     });
   });
   const flattenedSamples = formattedSamples.reduce(
