@@ -12,7 +12,6 @@ class ScheduleDatasource {
     this.scheduleEvery = this.scheduleEvery.bind(this);
     this.fetchSchedule = this.fetchSchedule.bind(this);
     this.scheduleHours = this.scheduleHours.bind(this);
-    this.addHour = this.addHour.bind(this);
     this[save] = this[save].bind(this);
     this[scheduleEverySync] = this[scheduleEverySync].bind(this);
     if (!fs.existsSync(settingsFileUrl)) {
@@ -76,18 +75,6 @@ class ScheduleDatasource {
    */
   scheduleHours(samples) {
     return this[save](samples);
-  }
-
-  /**
-   * Add specific hour to the current schedule if not exists
-   *
-   * @param {number} hour
-   */
-  async addHour(hour) {
-    const currentSamples = await this.fetchSchedule();
-    const nextSamples = new Set(currentSamples);
-    nextSamples.add(hour);
-    return this[save]([...nextSamples]);
   }
 }
 
