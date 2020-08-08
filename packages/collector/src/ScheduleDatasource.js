@@ -9,9 +9,9 @@ const save = Symbol('save');
 class ScheduleDatasource {
   constructor(settingsFileUrl = defaultSettingsFileUrl) {
     this.settingsFileUrl = settingsFileUrl;
-    this.scheduleEvery = this.scheduleEvery.bind(this);
-    this.fetchSchedule = this.fetchSchedule.bind(this);
-    this.scheduleHours = this.scheduleHours.bind(this);
+    this.setEvery = this.setEvery.bind(this);
+    this.fetch = this.fetch.bind(this);
+    this.set = this.set.bind(this);
     this[save] = this[save].bind(this);
     this[scheduleEverySync] = this[scheduleEverySync].bind(this);
     if (!fs.existsSync(settingsFileUrl)) {
@@ -20,7 +20,7 @@ class ScheduleDatasource {
   }
 
   /** @returns {Promise<number[]>} */
-  fetchSchedule() {
+  fetch() {
     return new Promise((res, rej) => {
       fs.readFile(this.settingsFileUrl, { encoding: 'utf-8' }, (err, data) => {
         if (err) return rej(err);
@@ -51,7 +51,7 @@ class ScheduleDatasource {
    *
    * @param {number} n An integer
    */
-  scheduleEvery(n) {
+  setEvery(n) {
     const samples = new Array(24 / n).fill(0).map((_, ii) => ii * 2);
     return this[save](samples);
   }
@@ -73,7 +73,7 @@ class ScheduleDatasource {
    *
    * @param {number[]} samples
    */
-  scheduleHours(samples) {
+  set(samples) {
     return this[save](samples);
   }
 }
