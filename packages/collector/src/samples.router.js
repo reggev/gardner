@@ -1,7 +1,4 @@
 const { Router } = require('express');
-
-const router = Router();
-
 const { getDurationUntilNextSample } = require('./utils');
 
 /**
@@ -9,35 +6,10 @@ const { getDurationUntilNextSample } = require('./utils');
  * @typedef {import('express').Request & { dataSources: DataSources }} Request
  */
 
-router.get('/', (req, res) => {
-  res.json({ success: true });
-});
-
-router.get(
-  '/next-sample',
-  /** @param {Request} req */
-  async (req, res) => {
-    const sampleHours = await req.dataSources.schedule.fetchSchedule();
-    const duration = getDurationUntilNextSample(sampleHours);
-    return res.json({
-      minutes: duration.asMinutes(),
-    });
-  }
-);
+const router = Router();
 
 router.post(
-  '/sample',
-  /** @param {Request} req */
-  async (req, res) => {
-    const { boardId, reading, sensorId } = req.body;
-    if (!boardId || !reading) return res.sendStatus(400);
-    await req.dataSources.samples.writeSample({ boardId, sensorId, reading });
-    res.sendStatus(200);
-  }
-);
-
-router.post(
-  '/samples',
+  '/',
   /** @param {Request} req */
   async ({ body, dataSources: { samples, schedule } }, res) => {
     /** @typedef {{ id: number; readings: number[] }} Board */
@@ -54,7 +26,7 @@ router.post(
       []
     );
     await samples.writeSamples(flattenedSamples);
-    const sampleHours = await schedule.fetchSchedule();
+    const sampleHours = await schedule.fetch();
     const duration = getDurationUntilNextSample(sampleHours);
     res.status(201);
     return res.json({

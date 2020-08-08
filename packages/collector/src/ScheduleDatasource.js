@@ -36,20 +36,23 @@ class ScheduleDatasource {
   [save](data) {
     const samples = data.map(Math.floor);
     const contentString = JSON.stringify(samples);
-    return fs.writeFile(
-      this.settingsFileUrl,
-      contentString,
-      {
-        encoding: 'utf-8',
-      },
-      null
-    );
+    return new Promise((res, rej) => {
+      fs.writeFile(
+        this.settingsFileUrl,
+        contentString,
+        {
+          encoding: 'utf-8',
+        },
+        (err, _) => (err ? rej(err) : res(samples))
+      );
+    });
   }
 
   /**
    * Divide the day into {n} sections. Completely overrides the current schedule!
    *
    * @param {number} n An integer
+   * @returns {Promise<number[]>}
    */
   setEvery(n) {
     const samples = new Array(24 / n).fill(0).map((_, ii) => ii * 2);
@@ -72,6 +75,7 @@ class ScheduleDatasource {
    * Set sampling hours. Completely overrides the current schedule!
    *
    * @param {number[]} samples
+   * @returns {Promise<number[]>}
    */
   set(samples) {
     return this[save](samples);
