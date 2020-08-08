@@ -3,6 +3,8 @@ grafana-data
 db-data
 grafana.conf/custom.ini
 
+.settings.json
+
 # Logs
 logs
 *.log
