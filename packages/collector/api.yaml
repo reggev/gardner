@@ -3,6 +3,44 @@ info:
   title: gardner samples collecting service
   version: '1.0.0'
 paths:
+  /:
+    get:
+      summary: fetch all available endpoints
+      responses:
+        '200':
+          description: available endpoints
+          content:
+            application/json:
+              example:
+                links:
+                  nextSample:
+                    href: '/schedule/next-sample'
+                    method: 'GET'
+                  schedule:
+                    href: '/schedule'
+                    method: 'GET'
+                  postSchedule:
+                    href: '/schedule'
+                    method: 'POST'
+                  postSample:
+                    href: '/sample'
+                    method: 'POST'
+                  postSamples:
+                    href: '/samples'
+                    method: 'POST'
+              schema:
+                type: object
+                properties:
+                  links:
+                    type: object
+                    additionalProperties:
+                      type: object
+                      properties:
+                        href:
+                          type: string
+                        method:
+                          type: string
+
   /schedule:
     post:
       summary: re-write a complete sampling schedule

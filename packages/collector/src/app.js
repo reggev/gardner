@@ -6,6 +6,7 @@ const logger = require('morgan');
 const samplesRouter = require('./samples.router');
 const sampleRouter = require('./sample.router');
 const scheduleRouter = require('./schedule.router');
+const rootRouter = require('./root.router');
 const swaggerUi = require('swagger-ui-express');
 const errMiddleware = require('./errors/middleware');
 const YAML = require('yamljs');
@@ -30,7 +31,7 @@ const dataSources = dataSourcesMiddleware({
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-
+app.use('/', rootRouter);
 app.use('/samples', dataSources, samplesRouter);
 app.use('/sample', dataSources, sampleRouter);
 app.use('/schedule', dataSources, scheduleRouter);
