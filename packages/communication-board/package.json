@@ -21,7 +21,7 @@
     "url": "git+https://github.com/reggev/gardner.git"
   },
   "scripts": {
-    "mock-server": "PORT=4000 nodemon ./mock-server",
+    "mock-server": "PORT=5001 nodemon ./mock-server",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {
@@ -29,7 +29,8 @@
   },
   "devDependencies": {
     "body-parser": "^1.19.0",
-    "json-server": "^0.16.1",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
     "nodemon": "^2.0.4"
   }
 }
