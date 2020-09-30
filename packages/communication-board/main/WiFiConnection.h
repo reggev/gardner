@@ -1,3 +1,4 @@
+#include "config.h"
 #include "env.h"
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h>

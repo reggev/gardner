@@ -1,6 +1,7 @@
 #include <Bounce2.h>
 
 #include "API.h"
+#include "BoardsCollection.h"
 #include "WiFiConnection.h"
 #include "boardsConfig.h"
 #include "config.h"
