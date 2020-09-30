@@ -56,11 +56,15 @@ String API::fetch(String uri) {
 
 String API::fetchInfo() {
     String payload = fetch(hostUri + "/");
+    Serial.println("[INFO]::fetch endpoints success");
+    deserializeJson(this->endpoints, payload);
+    this->_hasEndpoints = true;
     return payload;
 }
 
 double API::fetchMinutesUntilNextSample() {
-    String payload = fetch(hostUri + "/next-sample");
+    String endpoint = this->endpoints["links"]["nextSample"]["href"];
+    String payload = fetch(hostUri + endpoint);
     DynamicJsonDocument doc(1024);
     deserializeJson(doc, payload);
     double minutes = doc["minutes"].as<double>();
@@ -68,6 +72,7 @@ double API::fetchMinutesUntilNextSample() {
 }
 
 double API::postSamples(int boardId, double (&samples)[4]) {
+    String endpoint = this->endpoints["links"]["postSample"]["href"];
     StaticJsonDocument<400>
         doc; // estimated using https://arduinojson.org/v6/assistant/
     JsonArray samplesCollection = doc.createNestedArray("boards");

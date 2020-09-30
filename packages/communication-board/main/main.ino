@@ -63,6 +63,9 @@ void loop() {
     if (debouncer.rose())
         sensorBoards.sampleAll();
 
+    if (!api.hasEndpoints)
+        api.fetchInfo();
+
     if (sampleTimer.done()) {
         if (isFirstRun) {
             double minutesUntilNextSample = api.fetchMinutesUntilNextSample();

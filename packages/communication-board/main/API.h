@@ -19,8 +19,11 @@ class API {
                          String failError);
     String post(String url, String body);
     String fetch(String uri);
+    DynamicJsonDocument endpoints = DynamicJsonDocument(1024);
+    bool _hasEndpoints = false;
 
   public:
+    const bool& hasEndpoints = this->_hasEndpoints;
     String fetchInfo();
     double fetchMinutesUntilNextSample();
     double postSamples(int boardId, double (&samples)[4]);
