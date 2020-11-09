@@ -20,10 +20,6 @@ router.get('/', (req, res) => {
         href: '/sample',
         method: 'POST',
       },
-      postSamples: {
-        href: '/samples',
-        method: 'POST',
-      },
     },
   });
 });

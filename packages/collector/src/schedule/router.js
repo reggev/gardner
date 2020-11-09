@@ -1,11 +1,15 @@
 const { Router } = require('express');
-const { getDurationUntilNextSample } = require('./utils');
-
+const { getDurationUntilNextSample } = require('./../utils');
+const { StatusCodes } = require('http-status-codes');
 const router = Router();
 
 /**
- * @typedef {import('./app').DataSources} DataSources
- * @typedef {import('express').Request & { dataSources: DataSources }} Request
+ * @typedef {import('./../app').DataSources} DataSources
+ * @typedef {import('./../types.d').Request} Request
+ */
+/**
+ * @template Body
+ * @typedef {import('./../types.d').PostRequest<Body>} PostRequest
  */
 
 router.get(
@@ -31,7 +35,7 @@ router.get(
 
 router.post(
   '/',
-  /** @param {Request} req */
+  /** @param {PostRequest<{ schedule?: number[]; every?: number }>} req */
   async (req, res) => {
     const { schedule, every } = req.body;
     let nextSchedule;
@@ -40,10 +44,9 @@ router.post(
     } else if (every) {
       nextSchedule = await req.dataSources.schedule.setEvery(every);
     } else {
-      return res.sendStatus(400);
+      return res.sendStatus(StatusCodes.BAD_REQUEST);
     }
-    res.status(201);
-    res.json({ schedule: nextSchedule });
+    res.status(StatusCodes.CREATED).json({ schedule: nextSchedule });
   }
 );
 
