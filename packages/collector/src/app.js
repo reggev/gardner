@@ -2,9 +2,9 @@ require('express-async-errors');
 const express = require('express');
 const logger = require('morgan');
 const {
-  router: sampleRouter,
+  router: samplesRouter,
   dataSource: SamplesDatasource,
-} = require('./sample');
+} = require('./samples');
 const {
   router: scheduleRouter,
   dataSource: ScheduleDatasource,
@@ -31,9 +31,10 @@ const dataSources = dataSourcesMiddleware({
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(logger('dev'));
 app.use(express.json());
+app.use(dataSources);
 app.use('/', rootRouter);
-app.use('/sample', dataSources, sampleRouter);
-app.use('/schedule', dataSources, scheduleRouter);
+app.use('/samples', samplesRouter);
+app.use('/schedule', scheduleRouter);
 app.use(errMiddleware);
 
 module.exports = { app };

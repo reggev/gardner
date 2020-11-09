@@ -84,7 +84,7 @@ double API::postSamples(int boardId, double (&samples)[4]) {
     }
     String body;
     serializeJson(doc, body);
-    String payload = post(hostUri + "/samples", body);
+    String payload = post(endpoint, body);
     DynamicJsonDocument response(1024);
     deserializeJson(response, payload);
     double minutes = response["minutes"].as<double>();
