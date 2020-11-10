@@ -1,7 +1,9 @@
 const Ajv = require('ajv');
+const AjvErrors = require('ajv-errors');
 const swaggerSpec = require('./swaggerSpec');
 
-const ajv = new Ajv();
+const ajv = new Ajv({ allErrors: true, jsonPointers: true });
+AjvErrors(ajv);
 
 const routesSchema = Object.entries(swaggerSpec.paths)
   .map(([path, route]) => {
@@ -23,13 +25,18 @@ const routesSchema = Object.entries(swaggerSpec.paths)
     Object.fromEntries(
       Object.entries(entry).map(([method, { requestBody }]) => [
         method.toUpperCase(),
-        ajv.compile({
-          ...requestBody.content['application/json'].schema,
-          ...swaggerSpec,
-        }),
+        body =>
+          ajv.validate(
+            {
+              ...requestBody.content['application/json'].schema,
+              ...swaggerSpec,
+            },
+            body
+          ),
       ])
     ),
   ])
   .reduce((acc, [path, routes]) => ({ ...acc, [path]: routes }), {});
 
 module.exports = (path, method, body) => routesSchema[path][method](body);
+module.exports.ajv = ajv;

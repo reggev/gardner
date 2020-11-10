@@ -1,6 +1,8 @@
 const { Router } = require('express');
 const { getDurationUntilNextSample } = require('./../utils');
 const { StatusCodes } = require('http-status-codes');
+const validate = require('./../validation');
+const { ajv } = require('./../validation');
 const router = Router();
 
 /**
@@ -37,25 +39,18 @@ router.post(
   '/',
   /** @param {PostRequest<{ schedule?: number[]; every?: number }>} req */
   async (req, res) => {
+    const isValid = validate(req.baseUrl, req.method, req.body);
+
+    if (!isValid) {
+      const [error] = ajv.errors;
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: ajv.errorsText([error]) });
+    }
     const { schedule, every } = req.body;
     let nextSchedule;
     if (schedule) {
-      if (!Array.isArray(schedule)) {
-        return res.status(StatusCodes.BAD_REQUEST).json({
-          error: 'schedule must be an array of numbers(hours to sample)',
-        });
-      }
-      if (schedule.length === 0) {
-        return res
-          .status(StatusCodes.BAD_REQUEST)
-          .json({ error: 'you provided an empty schedule' });
-      }
       const _schedule = [...new Set(schedule)].sort();
-      if (_schedule[_schedule.length - 1] > 24) {
-        return res
-          .status(StatusCodes.BAD_REQUEST)
-          .json({ error: 'you provided a schedule for more than 24 hours' });
-      }
       nextSchedule = await req.dataSources.schedule.set(_schedule);
     } else if (every) {
       try {
@@ -65,10 +60,6 @@ router.post(
           .status(StatusCodes.BAD_REQUEST)
           .json({ error: error.message });
       }
-    } else {
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        error: 'you must provide either every: <hours>, or schedule: [<hours>]',
-      });
     }
     res.status(StatusCodes.CREATED).json({ schedule: nextSchedule });
   }

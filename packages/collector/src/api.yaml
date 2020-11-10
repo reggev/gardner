@@ -20,9 +20,6 @@ paths:
                   postSchedule:
                     href: '/schedule'
                     method: 'POST'
-                  # postSample:
-                  #   href: '/sample'
-                  #   method: 'POST'
                   postSamples:
                     href: '/samples'
                     method: 'POST'

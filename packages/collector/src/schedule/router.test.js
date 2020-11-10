@@ -42,9 +42,9 @@ describe('schedule', () => {
 
     test.each`
       schedule          | expectedRegex
-      ${[]}             | ${/empty schedule/i}
-      ${[1, 2, 18, 48]} | ${/more than 24 hours/i}
-      ${1}              | ${/must be an array of numbers/i}
+      ${[]}             | ${/schedule must be an array of numbers/i}
+      ${1}              | ${/schedule must be an array of numbers/i}
+      ${[1, 2, 18, 48]} | ${/must be a number from 0 to 24/i}
       ${undefined}      | ${/you must provide either/i}
     `(
       'expect setting  schedule $schedule to fail',

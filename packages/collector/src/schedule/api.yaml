@@ -16,10 +16,19 @@ paths:
                       type: array
                       items:
                         type: number
+                        maximum: 24
+                        errorMessage: 'a sampling hour must be a number from 0 to 24'
+                      minItems: 1
+                      errorMessage: 'schedule must be an array of numbers(hours to sample)'
+                  required:
+                    - schedule
                 - type: object
                   properties:
                     every:
                       type: number
+                  required:
+                    - every
+              errorMessage: 'you must provide either every: <hour> or schedule: [<hour>]'
       responses:
         '201':
           $ref: '#/components/responses/CreatedSchedule'
