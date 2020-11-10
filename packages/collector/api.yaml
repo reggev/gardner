@@ -25,6 +25,10 @@ components:
           type: array
           items:
             type: number
+          minItems: 1
+      required:
+        - id
+        - readings
     Minutes:
       type: object
       properties:

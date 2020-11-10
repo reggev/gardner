@@ -14,6 +14,9 @@ paths:
                   type: array
                   items:
                     $ref: '#/components/schemas/Board'
+                  minItems: 1
+              required:
+                - boards
       responses:
         '201':
           description: sample was saved
