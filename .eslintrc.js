@@ -2,12 +2,13 @@ module.exports = {
   env: {
     browser: true,
     es6: true,
+    'jest/globals': true,
   },
   extends: [
     'plugin:react/recommended',
     'airbnb',
     'plugin:prettier/recommended',
-    // 'plugin:jest/recommended',
+    'plugin:jest/recommended',
   ],
   globals: {
     Atomics: 'readonly',
@@ -20,13 +21,7 @@ module.exports = {
     ecmaVersion: 2018,
     sourceType: 'module',
   },
-  plugins: [
-    'react',
-    'prettier',
-    'react-hooks',
-    'jsdoc',
-    // 'jest'
-  ],
+  plugins: ['react', 'prettier', 'react-hooks', 'jsdoc', 'jest'],
   rules: {
     'react/prop-types': [2],
     'react/default-props-match-prop-types': [2],
