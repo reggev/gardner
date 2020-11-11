@@ -1,0 +1,26 @@
+paths:
+  /samples:
+    post:
+      tags:
+        - Samples
+      summary: post a sample
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                boards:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Board'
+                  minItems: 1
+              required:
+                - boards
+      responses:
+        '201':
+          description: sample was saved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Minutes'

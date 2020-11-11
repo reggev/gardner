@@ -1,21 +1,27 @@
 require('express-async-errors');
-const path = require('path');
 const express = require('express');
-const bodyParser = require('body-parser');
 const logger = require('morgan');
-const samplesRouter = require('./samples.router');
-const sampleRouter = require('./sample.router');
-const scheduleRouter = require('./schedule.router');
-const rootRouter = require('./root.router');
+const path = require('path');
 const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swaggerSpec');
+const {
+  router: samplesRouter,
+  dataSource: SamplesDatasource,
+} = require('./samples');
+const {
+  router: scheduleRouter,
+  dataSource: ScheduleDatasource,
+} = require('./schedule');
+const rootRouter = require('./root.router');
 const errMiddleware = require('./errors/middleware');
-const YAML = require('yamljs');
 const dataSourcesMiddleware = require('./DataSources.middleware');
-const ScheduleDatasource = require('./ScheduleDatasource');
-const SamplesDatasource = require('./SamplesDatasource');
 
-const swaggerDocument = YAML.load(path.resolve(__dirname, '..', 'api.yaml'));
 const app = express();
+let settingsFile;
+
+if (process.env.NODE_ENV === 'test') {
+  settingsFile = path.resolve(__dirname, '.settings.mock.json');
+}
 
 /**
  * @typedef {{
@@ -24,16 +30,21 @@ const app = express();
  * }} DataSources
  */
 const dataSources = dataSourcesMiddleware({
-  schedule: new ScheduleDatasource(),
+  schedule: new ScheduleDatasource(settingsFile),
   samples: new SamplesDatasource(),
 });
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.use(logger('dev'));
-app.use(bodyParser.json());
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+if (process.env.NODE_ENV !== 'test') {
+  app.use(logger('dev'));
+}
+
+app.use(express.json());
+app.use(dataSources);
 app.use('/', rootRouter);
-app.use('/samples', dataSources, samplesRouter);
-app.use('/sample', dataSources, sampleRouter);
-app.use('/schedule', dataSources, scheduleRouter);
+app.use('/samples', samplesRouter);
+app.use('/schedule', scheduleRouter);
 app.use(errMiddleware);
+
 module.exports = { app };

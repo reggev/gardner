@@ -18,6 +18,7 @@ services:
       - /usr/src/app/packages/collector/node_modules
     networks:
       - backend
+    command: npm run dev
 
   db:
     image: influxdb:1.8

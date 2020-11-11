@@ -1,0 +1,37 @@
+paths:
+  /:
+    get:
+      tags:
+        - Root
+      summary: fetch all available endpoints
+      responses:
+        '200':
+          description: available endpoints
+          content:
+            application/json:
+              example:
+                links:
+                  nextSample:
+                    href: '/schedule/next-sample'
+                    method: 'GET'
+                  schedule:
+                    href: '/schedule'
+                    method: 'GET'
+                  postSchedule:
+                    href: '/schedule'
+                    method: 'POST'
+                  postSamples:
+                    href: '/samples'
+                    method: 'POST'
+              schema:
+                type: object
+                properties:
+                  links:
+                    type: object
+                    additionalProperties:
+                      type: object
+                      properties:
+                        href:
+                          type: string
+                        method:
+                          type: string

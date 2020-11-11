@@ -55,7 +55,10 @@ class ScheduleDatasource {
    * @returns {Promise<number[]>}
    */
   setEvery(n) {
-    const samples = new Array(24 / n).fill(0).map((_, ii) => ii * 2);
+    if (24 % n !== 0) {
+      throw new Error(`a day cannot be divided to ${n} samples evenly`);
+    }
+    const samples = new Array(Math.ceil(24 / n)).fill(0).map((_, ii) => ii * n);
     return this[save](samples);
   }
 

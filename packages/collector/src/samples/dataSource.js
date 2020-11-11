@@ -1,5 +1,5 @@
 const { InfluxDB, Point } = require('@influxdata/influxdb-client');
-const { failedToWriteSample, failedToWriteSamples } = require('./errors');
+const { failedToWriteSample, failedToWriteSamples } = require('../errors');
 
 const { DB_HOST, DB_PORT, DB_NAME, DB_USER_NAME, DB_PASSWORD } = process.env;
 // TODO:: consider a better place for those settings

@@ -4,6 +4,7 @@ db-data
 grafana.conf/custom.ini
 
 .settings.json
+.settings.mock.json
 
 # Logs
 logs
