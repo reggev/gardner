@@ -1,7 +1,7 @@
 const { Router } = require('express');
-const { getDurationUntilNextSample } = require('./../utils');
 const { StatusCodes } = require('http-status-codes');
-const validate = require('./../validation');
+const { getDurationUntilNextSample } = require('./../utils');
+const validationMiddleware = require('./../validation.middleware');
 /**
  * @typedef {import('./../app').DataSources} DataSources I
  * @typedef {{ id: number; readings: number[] }} Board
@@ -15,12 +15,9 @@ const router = Router();
 
 router.post(
   '/',
+  validationMiddleware,
   /** @param {PostRequest<{ boards: Board[] }>} req */
   async ({ body, dataSources: { samples, schedule }, ...req }, res) => {
-    const isValid = validate(req.baseUrl, req.method, body);
-    if (!isValid) {
-      return res.sendStatus(StatusCodes.BAD_REQUEST);
-    }
     const { boards } = body;
     const formattedSamples = boards
       .map(({ id, readings }) =>

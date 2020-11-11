@@ -1,8 +1,7 @@
 const { Router } = require('express');
 const { getDurationUntilNextSample } = require('./../utils');
 const { StatusCodes } = require('http-status-codes');
-const validate = require('./../validation');
-const { ajv } = require('./../validation');
+const validationMiddleware = require('./../validation.middleware');
 const router = Router();
 
 /**
@@ -37,16 +36,9 @@ router.get(
 
 router.post(
   '/',
+  validationMiddleware,
   /** @param {PostRequest<{ schedule?: number[]; every?: number }>} req */
   async (req, res) => {
-    const isValid = validate(req.baseUrl, req.method, req.body);
-
-    if (!isValid) {
-      const [error] = ajv.errors;
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ error: ajv.errorsText([error]) });
-    }
     const { schedule, every } = req.body;
     let nextSchedule;
     if (schedule) {

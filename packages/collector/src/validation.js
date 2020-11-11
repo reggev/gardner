@@ -39,4 +39,5 @@ const routesSchema = Object.entries(swaggerSpec.paths)
   .reduce((acc, [path, routes]) => ({ ...acc, [path]: routes }), {});
 
 module.exports = (path, method, body) => routesSchema[path][method](body);
+
 module.exports.ajv = ajv;
