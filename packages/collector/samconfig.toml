@@ -1,0 +1,12 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "gardner"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1kg6vcqe93a4q"
+s3_prefix = "gardner"
+region = "eu-central-1"
+profile = "personal"
+confirm_changeset = false
+capabilities = "CAPABILITY_IAM"
+image_repositories = []

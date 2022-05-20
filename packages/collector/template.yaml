@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Gardner
+
+Globals:
+  Function:
+    Runtime: nodejs14.x
+    Timeout: 30
+
+Resources:
+  GardnerApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      EndpointConfiguration:
+        Type: REGIONAL
+      # Auth:
+      #   DefaultAuthorizer: GardnerAuthorizer
+      #   Authorizers:
+      #     GardnerAuthorizer:
+      #       FunctionArn: !GetAtt GardnerAuth.Arn
+      #       Identity:
+      #         Headers:
+      #           - Authorization
+
+  GardnerAuth:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: authorizer.handler
+      FunctionName: 'Gardner-Authorizer'
+      CodeUri: ./src
+
+  PostSample:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: samples.runPostSample
+      FunctionName: 'Register-Sample'
+      CodeUri: ./src
+      Events:
+        GetRoot:
+          Type: Api
+          Properties:
+            RestApiId: !Ref GardnerApi
+            Path: /sample
+            Method: post
+
+  scheduleBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: 'gardner-schedule'
+      AccessControl: 'BucketOwnerFullControl'
+
+  samplesBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: 'gardner-samples'
+      AccessControl: 'BucketOwnerFullControl'

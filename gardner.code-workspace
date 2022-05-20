@@ -1,0 +1,43 @@
+{
+  "folders": [
+    {
+      "path": "packages/calibration-board"
+    },
+    {
+      "path": "packages/collector"
+    },
+    {
+      "path": "packages/communication-board"
+    },
+    {
+      "path": "packages/sensor-board"
+    },
+    {
+      "path": "packages/deployment-scripts"
+    },
+    {
+      "path": "docs"
+    },
+    {
+      "path": ".github/workflows"
+    }
+  ],
+  "settings": {
+    "cSpell.words": [
+      "Presult",
+      "fastify",
+      "healthz",
+      "integ",
+      "jsonb",
+      "keepa",
+      "pino",
+      "postgres",
+      "roundforest",
+      "testkit",
+      "thrasio"
+    ]
+  },
+  "extensions": {
+    "recommendations": []
+  }
+}
