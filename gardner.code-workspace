@@ -32,7 +32,10 @@
       "roundforest",
       "testkit",
       "thrasio"
-    ]
+    ],
+    "yaml.schemas": {
+      "https://raw.githubusercontent.com/awslabs/goformation/master/schema/sam.schema.json": "file:///Users/reggev/repos/gardner/packages/collector/template.yaml"
+    }
   },
   "extensions": {
     "recommendations": []
