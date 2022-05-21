@@ -3,6 +3,7 @@ import 'webpack-dev-server'
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import AwsSamPlugin from 'aws-sam-webpack-plugin'
 import {Configuration} from 'webpack'
+
 const awsSamPlugin = new AwsSamPlugin({vscodeDebug: false})
 const config: Configuration = {
   entry: awsSamPlugin.entry(),

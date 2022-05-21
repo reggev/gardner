@@ -4,7 +4,7 @@ Description: Gardner
 
 Globals:
   Function:
-    Runtime: nodejs14.x
+    Runtime: nodejs16.x
     Timeout: 30
 
 Resources:
@@ -34,8 +34,13 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: samples.runPostSample
-      FunctionName: 'Register-Sample'
+      FunctionName: 'Post-Sample'
       CodeUri: ./src
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Ref SamplesBucket
+        - S3WritePolicy:
+            BucketName: !Ref SamplesBucket
       Events:
         GetRoot:
           Type: Api
@@ -44,13 +49,7 @@ Resources:
             Path: /sample
             Method: post
 
-  scheduleBucket:
-    Type: 'AWS::S3::Bucket'
-    Properties:
-      BucketName: 'gardner-schedule'
-      AccessControl: 'BucketOwnerFullControl'
-
-  samplesBucket:
+  SamplesBucket:
     Type: 'AWS::S3::Bucket'
     Properties:
       BucketName: 'gardner-samples'
