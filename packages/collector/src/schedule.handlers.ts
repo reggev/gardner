@@ -1,8 +1,9 @@
+import {ReadStream} from 'fs'
 import {makeS3Client} from './s3_client'
 import {NowService} from './globals'
 import cronParser from 'cron-parser'
 
-const scheduleKey = `schedule.json`
+const scheduleKey = `schedule.txt`
 
 export async function updateSchedule(
   expression: string,
@@ -19,7 +20,6 @@ export async function updateSchedule(
   return {}
 }
 
-// (new Date('2022-04-02 02:05:00.000') - new Date('2022-04-01 01:00:00.000')) / 1000 / 60
 export async function getSchedule(
   samplesBucket: ReturnType<typeof makeS3Client>,
   nowService: NowService,
@@ -29,7 +29,7 @@ export async function getSchedule(
     throw new Error('Schedule file not found')
   }
 
-  const expression = scheduleFile?.Body?.toString() ?? ''
+  const expression = await samplesBucket.streamToString(scheduleFile.Body as ReadStream)
 
   if (expression === '') {
     throw new Error('Schedule file is empty')
