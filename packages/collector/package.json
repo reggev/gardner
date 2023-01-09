@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.95.0",
-    "cron-parser": "^4.4.0",
+    "cron-parser": "^4.7.0",
     "jsonwebtoken": "^8.5.1",
     "secure-json-parse": "^2.4.0",
     "zod": "^3.16.1"
